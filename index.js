@@ -1,8 +1,22 @@
 import puppeteer from "puppeteer";
-import fs from "fs/promises";
-import { promises as fsPromises } from "fs";
-import imageDownloader from 'image-downloader';
+import fs, { promises as fsPromises } from "fs";
 import inquirer from 'inquirer';
+import https from 'https';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const rarityChoices = [
+  'Common',
+  'Uncommon',
+  'Rare',
+  'Super Rare',
+  'Ultra Rare',
+  'Promotinal Rare',
+  'Collector Super Rare',
+  'Collector Ultra Rare',
+  'Collector Promo Rare'
+];
+let directory;
 
 inquirer
   .prompt([
@@ -10,37 +24,29 @@ inquirer
       type: 'rawlist',
       name: 'rarity',
       message: 'Select a value for rarity:',
-      choices: [
-        'Common',
-        'Uncommon',
-        'Rare',
-        'Super Rare',
-        'Ultra Rare',
-        'Promotinal Rare',
-        'Collector Super Rare',
-        'Collector Ultra Rare',
-        'Collector Promo Rare'
-      ],
+      choices: rarityChoices,
     },
   ])
   .then(answers => {
     console.log("resp: ", answers);
     let rarity;
     switch (answers.rarity) {
-      case "Common": rarity = 1; break;
-      case "Uncommon": rarity = 2; break;
-      case "Rare": rarity = 3; break;
-      case "Super Rare": rarity = 4; break;
-      case "Ultra Rare": rarity = 5; break;
-      case "Promotinal Rare": rarity = 6; break;
-      case "Collector Super Rare": rarity = 7; break;
-      case "Collector Ultra Rare": rarity = 8; break;
-      case "Collector Promo Rare": rarity = 9; break;
+      case rarityChoices[0]: rarity = 1; break;
+      case rarityChoices[1]: rarity = 2; break;
+      case rarityChoices[2]: rarity = 3; break;
+      case rarityChoices[3]: rarity = 4; break;
+      case rarityChoices[4]: rarity = 5; break;
+      case rarityChoices[5]: rarity = 6; break;
+      case rarityChoices[6]: rarity = 7; break;
+      case rarityChoices[7]: rarity = 8; break;
+      case rarityChoices[8]: rarity = 9; break;
     }
     console.log("Please wait a moment while the images are being downloaded");
-    // const rarity = answers.rarity
+
+    directory = `./images_${rarityChoices[rarity-1]}`;
 
     const url = `https://index.gatcg.com/cards?rarity=${rarity}`
+
     handleDynamicWebPage(url, rarity);
 
   });
@@ -75,75 +81,62 @@ async function createDirectory(directory) {
   }
 }
 
-async function downloadImgs(directory, data) {
-  // console.log("data", data);
-  for (const item of data) {
-    const imageUrl = item.src;
-    const options = {
-      url: imageUrl,
-      dest: `../../${directory}/${imageUrl.split('/').pop()}`, // the images will be saved at node_modules/image-downloader by default
-    };
-    try {
-      await imageDownloader.image(options);
-      console.log(`Image downloaded: ${imageUrl}`);
-    } catch (error) {
-      console.error(`Failed to download image: ${imageUrl}`);
+
+function downloadImgs(imageDetails) {
+  const jsonContent = JSON.stringify(imageDetails, null, 2);
+  try {
+    fs.writeFileSync('imageDetails.json', jsonContent);
+    console.log('JSON file created successfully!');
+  } catch (err) {
+    console.error('Error writing JSON file:', err);
+  }
+
+  console.log(`Images to be downloaded: ${imageDetails.length}`);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  for (const imageDetail of imageDetails) {
+    https.get(imageDetail.src, (res) => {
+      const filePath = path.resolve(__dirname, directory, path.basename(imageDetail.src));
+      const fileStream = fs.createWriteStream(filePath);
+      res.pipe(fileStream);
+      fileStream.on('finish', () => {
+          fileStream.close();
+          console.log(`Image downloaded: ${imageDetail.alt} ${imageDetail.src}`);
+      });
+    }).on('error', (error) => {
+      console.error(`Failed to download image: ${imageDetail.alt} ${imageDetail.src}`);
       console.error(error);
-    }
+    });
   }
 }
 
-async function handleDynamicWebPage(url, rarity) {
+async function handleDynamicWebPage(url) {
+
+  await createDirectory(directory);
+
   const browser = await puppeteer.launch(
     {
     headless: true,
     slowMo: 2000,
     }
   );
-  
+
   const page = await browser.newPage();
-
   await page.goto(url);
-
   await page.setViewport({width: 1080, height: 1024});
 
   // Función para simular el desplazamiento
   await autoScroll(page);
-  
-  const data = await page.evaluate(() => {
-    const imgs = document.querySelectorAll(".card__image");
-    const data = [...imgs].map((imgEl, index) => {
-        return {
-          index: index,
-          alt: imgEl.alt,
-          src: imgEl.src
-        };
-    });
-    return data;
 
+  const imageDetails = await page.evaluate(() => {
+    const imgs = Array.from(document.querySelectorAll(".card__image"));
+    return imgs.map(img => ({ src: img.src, alt: img.alt }));
   });
 
-  console.log("data to be downloaded: ", data);
-  const jsonFile = `images${rarity}.json`
-
-  try {
-    // Convierte el objeto 'data' en formato JSON
-    const jsonData = JSON.stringify(data, null, 2);
-
-    // Escribe el JSON en el archivo
-    await fs.writeFile(jsonFile, jsonData, 'utf-8');
-    console.log('JSON file created successfully');
-  } catch (error) {
-      console.error('Failed to create JSON file:', error);
-  }
-
-  const directory = `./images${rarity}`;
-  await createDirectory(directory);
-
-  await downloadImgs(directory, data)
+  downloadImgs(imageDetails)
 
   await browser.close();
 }
-
 
 
