@@ -55,12 +55,12 @@ try {
   let rarityTextArray = rarityCollection.map(item => item.text);
   let rarityValueArray = rarityCollection.map(item => item.value);
   rarityTextArray = ["none"].concat(rarityTextArray);
-  rarityValueArray = ["none"].concat(rarityValueArray);
+  rarityValueArray = [""].concat(rarityValueArray);
 
   let setTextArray = setCollection.map(item => item.text);
   let setValueArray = setCollection.map(item => item.value);
   setTextArray = ["none"].concat(setTextArray);
-  setValueArray = ["none"].concat(setValueArray);
+  setValueArray = [""].concat(setValueArray);
 
 
   console.log(setTextArray)
