@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "inquirer": "^9.2.10",
+    "node-fetch": "^3.3.2",
     "puppeteer": "^21.1.1"
   }
 }

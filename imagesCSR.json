@@ -1,0 +1,122 @@
+[
+  {
+    "index": 0,
+    "alt": "Nia, Mistveiled Scout",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/nia-mistveiled-scout-evp.jpg"
+  },
+  {
+    "index": 1,
+    "alt": "Arthur, Young Heir",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/arthur-young-heir-evp.jpg"
+  },
+  {
+    "index": 2,
+    "alt": "Lunete, Frostbinder Priest",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/lunete-frostbinder-priest-evp.jpg"
+  },
+  {
+    "index": 3,
+    "alt": "Gawain, Chivalrous Thief",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/gawain-chivalrous-thief-evp.jpg"
+  },
+  {
+    "index": 4,
+    "alt": "Merlin, Kingslayer",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/merlin-kingslayer-ftc-csra.jpg"
+  },
+  {
+    "index": 5,
+    "alt": "Parcenet, Royal Maid",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/parcenet-royal-maid-evp.jpg"
+  },
+  {
+    "index": 6,
+    "alt": "Lorraine, Crux Knight",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/lorraine-crux-knight-doasd-csr.jpg"
+  },
+  {
+    "index": 7,
+    "alt": "Uther, Illustrious King",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/uther-illustrious-king-evp.jpg"
+  },
+  {
+    "index": 8,
+    "alt": "Rai, Storm Seer",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/rai-storm-seer-doasd-csr.jpg"
+  },
+  {
+    "index": 9,
+    "alt": "Gildas, Chronicler of Aesa",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/gildas-chronicler-of-aesa-sp1-csr.jpg"
+  },
+  {
+    "index": 10,
+    "alt": "Nimue, Cursed Touch",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/nimue-cursed-touch-sp1-csr.jpg"
+  },
+  {
+    "index": 11,
+    "alt": "Silvie, Loved by All",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/silvie-loved-by-all-doasd-csr.jpg"
+  },
+  {
+    "index": 12,
+    "alt": "Allen, Beast Beckoner",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/allen-beast-beckoner-doa-alter-csr.jpg"
+  },
+  {
+    "index": 13,
+    "alt": "Merlin, Memory Thief",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/merlin-memory-thief-doa-alter-csr.jpg"
+  },
+  {
+    "index": 14,
+    "alt": "Triskit, Guidance Angel",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/triskit-guidance-angel-sp1-csr.jpg"
+  },
+  {
+    "index": 15,
+    "alt": "Mordred, Flawless Blade",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/mordred-flawless-blade-doa-alter-csr.jpg"
+  },
+  {
+    "index": 16,
+    "alt": "Tristan, Grim Stalker",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/tristan-grim-stalker-doa-alter-csr.jpg"
+  },
+  {
+    "index": 17,
+    "alt": "Zander, Blinding Steel",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/zander-blinding-steel-sp1-csr.jpg"
+  },
+  {
+    "index": 18,
+    "alt": "The Majestic Spirit",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/the-majestic-spirit-ftc-csr.jpg"
+  },
+  {
+    "index": 19,
+    "alt": "Bedivere, Woodland Overseer",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/bedivere-woodland-overseer-ftc-csr.jpg"
+  },
+  {
+    "index": 20,
+    "alt": "Blanche, Sheltering Saint",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/blanche-sheltering-saint-ftc-csr.jpg"
+  },
+  {
+    "index": 21,
+    "alt": "Lancelot, Goliath of Aesa",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/lancelot-goliath-of-aesa-ftc-csr.jpg"
+  },
+  {
+    "index": 22,
+    "alt": "Morgan, Soul Guide",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/morgan-soul-guide-ftc-csr.jpg"
+  },
+  {
+    "index": 23,
+    "alt": "Kraal, Stonescale Tyrant",
+    "src": "https://ga-index-public.s3.us-west-2.amazonaws.com/cards/kraal-stonescale-tyrant-ftc-csr.jpg"
+  }
+]

@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import puppeteer from "puppeteer";
 import fs, { promises as fsPromises } from "fs";
 import inquirer from 'inquirer';
@@ -5,52 +6,137 @@ import https from 'https';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const rarityChoices = [
-  'Common',
-  'Uncommon',
-  'Rare',
-  'Super Rare',
-  'Ultra Rare',
-  'Promotinal Rare',
-  'Collector Super Rare',
-  'Collector Ultra Rare',
-  'Collector Promo Rare'
-];
 let directory;
+let rarity;
+let set;
 
-inquirer
+const setChoices = [
+  'None',
+  'Promotional 2022',
+  'LGS Demo 2022',
+  'Dawn of Ashes Prelude',
+  'Kickstarter Promotional',
+  'Dawn of Ashes First Edition',
+  'Dawn of Ashes Starter Decks',
+  'Dawn of Ashes Alter Edition',
+  'Event Packs',
+  'they belong to the set “I’ve been recruited as a champion to save the world but suddenly got transported to modern Earth!',
+  'LGS Demo 2023',
+  'Supporter Pack 1',
+  'Fractured Crown: Armament',
+  'Fractured Crown',
+  'Promotional 2023',
+];
+
+const searchUrl ="https://api.gatcg.com/option/search"
+// const searchUrl ="https://jsonplaceholder.typicode.com/posts/1"
+
+const searchValues = async () => {
+  const response = await fetch(searchUrl)
+  if (response.status === 200) {
+    const data = await response.json()
+    // console.log("la data", data)
+    return data
+  } else {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+}
+
+try {
+  const data = await searchValues()
+  const classCollection = data.class
+  const elementCollection = data.element
+  const gameFormatCollection = data.gameFormat
+  const rarityCollection = data.rarity
+  const setCollection = data.set
+  const subtypeCollection = data.subtype
+  const typeCollection = data.type
+
+  let rarityTextArray = rarityCollection.map(item => item.text);
+  let rarityValueArray = rarityCollection.map(item => item.value);
+  rarityTextArray = ["none"].concat(rarityTextArray);
+  rarityValueArray = ["none"].concat(rarityValueArray);
+
+  let setTextArray = setCollection.map(item => item.text);
+  let setValueArray = setCollection.map(item => item.value);
+  setTextArray = ["none"].concat(setTextArray);
+  setValueArray = ["none"].concat(setValueArray);
+
+
+  console.log(setTextArray)
+  console.log(setValueArray)
+
+  inquirer
   .prompt([
     {
       type: 'rawlist',
       name: 'rarity',
-      message: 'Select a value for rarity:',
-      choices: rarityChoices,
+      message: 'Select the type of rarity:',
+      choices: rarityTextArray,
     },
+    {
+      type: 'rawlist',
+      name: 'set',
+      message: 'Select the type of set:',
+      choices: setTextArray,
+    },
+
   ])
   .then(answers => {
-    console.log("resp: ", answers);
-    let rarity;
-    switch (answers.rarity) {
-      case rarityChoices[0]: rarity = 1; break;
-      case rarityChoices[1]: rarity = 2; break;
-      case rarityChoices[2]: rarity = 3; break;
-      case rarityChoices[3]: rarity = 4; break;
-      case rarityChoices[4]: rarity = 5; break;
-      case rarityChoices[5]: rarity = 6; break;
-      case rarityChoices[6]: rarity = 7; break;
-      case rarityChoices[7]: rarity = 8; break;
-      case rarityChoices[8]: rarity = 9; break;
+    console.log("Searching for: ", answers);
+    console.log("Wait a moment please while the images links are being collected");
+
+    rarityTextArray.forEach((rText, index) => {
+      if (rText === answers.rarity) rarity = rarityValueArray[index]
+    })
+
+    setTextArray.forEach((sText, index) => {
+      if (sText === answers.set) set = setValueArray[index]
+    })
+
+
+    // switch (answers.set) {
+    //   case setChoices[0]: set = ''; break;
+    //   case setChoices[1]: set = 'P22'; break;
+    //   case setChoices[2]: set = 'DEMO22'; break;
+    //   case setChoices[3]: set = 'DOAp'; break;
+    //   case setChoices[4]: set = 'KSP'; break;
+    //   case setChoices[5]: set = 'DOA 1st'; break;
+    //   case setChoices[6]: set = 'DOASD'; break;
+    //   case setChoices[7]: set = 'DOA Alter'; break;
+    //   case setChoices[8]: set = 'EVP'; break;
+    //   case setChoices[9]: set = 'GSC'; break;
+    //   case setChoices[10]: set = 'DEMO23'; break;
+    //   case setChoices[11]: set = 'SP1'; break;
+    //   case setChoices[12]: set = 'FTCA'; break;
+    //   case setChoices[13]: set = 'FTC'; break;
+    //   case setChoices[14]: set = 'P23'; break;
+    // }
+
+    console.log("It could take a while depending on the numbers of cards with the selected settings");
+    console.log("rarity :", rarity, " set ", set);
+
+    if ((rarity === undefined) && (set === undefined)) {
+      directory = `./images`;
+    } else if ((rarity === undefined) && (set !== undefined))  {
+      directory = `./images_${set}`;
+    } else if ((rarity !== undefined) && (set === undefined)) {
+      directory = `./images_${rarity}`;
+    } else {
+      directory = `./images_${rarity}_${set}`;
     }
-    console.log("Please wait a moment while the images are being downloaded");
 
-    directory = `./images_${rarityChoices[rarity-1]}`;
 
-    const url = `https://index.gatcg.com/cards?rarity=${rarity}`
+    const url = `https://index.gatcg.com/cards?rarity=${rarity}&prefix=${set}`
+    console.log(url)
 
     handleDynamicWebPage(url, rarity);
 
   });
 
+} catch (error) {
+  console.error("Error:", error)
+}
 
 async function autoScroll(page){
   let elementsCount = 0;
@@ -66,14 +152,14 @@ async function autoScroll(page){
 async function createDirectory(directory) {
   try {
     await fsPromises.access(directory);
-    console.log('Directory already exists');
+    console.log('Folder already exists');
   } catch (error) {
     if (error.code === 'ENOENT') {
       try {
         await fsPromises.mkdir(directory);
-        console.log('Directory created successfully');
+        console.log('Folder created successfully');
       } catch (error) {
-        console.error('Failed to create directory:', error);
+        console.error('Failed to create Folder:', error);
       }
     } else {
       console.error('Error accessing directory:', error);
@@ -91,7 +177,7 @@ function downloadImgs(imageDetails) {
     console.error('Error writing JSON file:', err);
   }
 
-  console.log(`Images to be downloaded: ${imageDetails.length}`);
+  console.log(`Number of images to be downloaded: ${imageDetails.length}`);
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
@@ -102,7 +188,7 @@ function downloadImgs(imageDetails) {
       res.pipe(fileStream);
       fileStream.on('finish', () => {
           fileStream.close();
-          console.log(`Image downloaded: ${imageDetail.alt} ${imageDetail.src}`);
+          console.log(`Downloaded: ${imageDetail.alt} ${imageDetail.src}`);
       });
     }).on('error', (error) => {
       console.error(`Failed to download image: ${imageDetail.alt} ${imageDetail.src}`);
