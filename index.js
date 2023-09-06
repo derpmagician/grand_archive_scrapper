@@ -10,26 +10,8 @@ let directory;
 let rarity;
 let set;
 
-const setChoices = [
-  'None',
-  'Promotional 2022',
-  'LGS Demo 2022',
-  'Dawn of Ashes Prelude',
-  'Kickstarter Promotional',
-  'Dawn of Ashes First Edition',
-  'Dawn of Ashes Starter Decks',
-  'Dawn of Ashes Alter Edition',
-  'Event Packs',
-  'they belong to the set “I’ve been recruited as a champion to save the world but suddenly got transported to modern Earth!',
-  'LGS Demo 2023',
-  'Supporter Pack 1',
-  'Fractured Crown: Armament',
-  'Fractured Crown',
-  'Promotional 2023',
-];
 
 const searchUrl ="https://api.gatcg.com/option/search"
-// const searchUrl ="https://jsonplaceholder.typicode.com/posts/1"
 
 const searchValues = async () => {
   const response = await fetch(searchUrl)
@@ -62,28 +44,27 @@ try {
   setTextArray = ["none"].concat(setTextArray);
   setValueArray = [""].concat(setValueArray);
 
-
-  console.log(setTextArray)
-  console.log(setValueArray)
+  // console.log(setTextArray)
+  // console.log(setValueArray)
 
   inquirer
   .prompt([
     {
       type: 'rawlist',
       name: 'rarity',
-      message: 'Select the type of rarity:',
+      message: 'Select the type of rarity, (choose none to skip this filter)',
       choices: rarityTextArray,
     },
     {
       type: 'rawlist',
       name: 'set',
-      message: 'Select the type of set:',
+      message: 'Select the type of set, (choose none to skip this filter)',
       choices: setTextArray,
     },
 
   ])
   .then(answers => {
-    console.log("Searching for: ", answers);
+    console.log("Active filters ", answers);
     console.log("Wait a moment please while the images links are being collected");
 
     rarityTextArray.forEach((rText, index) => {
@@ -93,25 +74,6 @@ try {
     setTextArray.forEach((sText, index) => {
       if (sText === answers.set) set = setValueArray[index]
     })
-
-
-    // switch (answers.set) {
-    //   case setChoices[0]: set = ''; break;
-    //   case setChoices[1]: set = 'P22'; break;
-    //   case setChoices[2]: set = 'DEMO22'; break;
-    //   case setChoices[3]: set = 'DOAp'; break;
-    //   case setChoices[4]: set = 'KSP'; break;
-    //   case setChoices[5]: set = 'DOA 1st'; break;
-    //   case setChoices[6]: set = 'DOASD'; break;
-    //   case setChoices[7]: set = 'DOA Alter'; break;
-    //   case setChoices[8]: set = 'EVP'; break;
-    //   case setChoices[9]: set = 'GSC'; break;
-    //   case setChoices[10]: set = 'DEMO23'; break;
-    //   case setChoices[11]: set = 'SP1'; break;
-    //   case setChoices[12]: set = 'FTCA'; break;
-    //   case setChoices[13]: set = 'FTC'; break;
-    //   case setChoices[14]: set = 'P23'; break;
-    // }
 
     console.log("It could take a while depending on the numbers of cards with the selected settings");
     console.log("rarity :", rarity, " set ", set);
